@@ -1,0 +1,270 @@
+<html lang="en"><head>
+		<meta charset="utf-8">
+
+		<meta name="author" content="Maaz Bin Safeer Ahmad">
+		<meta name="keywords" content="Casper, Maaz Bin Safeer Ahmad, Verified Lifting, Compiler, Spark, Data Processing, Big Data, Maaz Ahmad, CSE, UW, Univeristy of Washington, Alvin Cheung, Programming Languages, Databases">
+		
+		<title>Casper</title>
+		<meta name="description" content="Casper is a tool that automatically translates code fragments in Java applications to run on Big Data Processing Frameworks such as Apache Hadoop or Apache Spark.">
+
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+
+		<!-- Latest compiled and minified CSS -->
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+
+		<!-- Latest compiled and minified JavaScript -->
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
+ 		<script>
+		  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+		  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+		  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+		  ga('create', 'UA-27186113-6', 'auto');
+		  ga('send', 'pageview');
+		</script>
+		
+		<link rel="stylesheet" href="codemirror.css">
+		<script src="codemirror.js"></script>
+		<script src="clike.js"></script>
+
+		<style>
+			.label {
+		    		padding: .2em 0.6em .2em;
+			}
+			.container{
+				max-width: 730px;
+			}
+
+			.content{
+				float: left;
+				max-width: 730px;
+				width: 100%;
+			}
+
+			p{
+				font-size: 16px;
+				text-align: justify;
+			}
+
+			h1{
+				font-size: 56px;
+				margin-bottom: 0px;
+				font-weight: bold;
+				color: #337ab7;
+			}
+
+			.subtitle{
+				font-size: 24px;
+				color: #666;
+				margin-bottom: 20px;
+			}
+
+			h2{
+				font-size: 24px;
+				color: #666;
+				margin-top: 18px;
+			}
+
+			.person {
+			    margin: 10px;
+			    width: 110px;
+			    height: 140px;
+			    float: left;
+			}
+
+			.person:hover{
+				transition: opacity .1s;
+    			opacity: 0.7;
+			}
+
+			.person img{
+				height: 100%;
+			    width: 100%;
+			    border-radius: 6px;
+			    object-fit: cover;
+			    object-position: center
+			}
+
+			.person p{
+				text-align: center;
+			    font-size: 1em;
+			    font-weight: bold;
+			    color: white;
+			    position: relative;
+			    text-shadow: 1px 1px 2px black;
+			    padding-bottom: 4px;
+			    bottom: 25px;
+			    display: table-cell;
+			    vertical-align: bottom;
+			    width: 110px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="container">
+      		<div class="content">
+  				<h1>Casper</h1>
+  				<p class="subtitle">Run your Java applications on Big Data Frameworks</p>
+  				<p>
+  					Many parallel data processing frameworks have been proposed recently (e.g., Spark, Hadoop, GraphLab). 
+  					However, to using such frameworks requires rewriting existing code to 
+  					the domain-specific languages that are supported by them.
+  					This rewriting process is tedious and error-prone, and even if developers are willing to rewrite,
+  					they still need to choose which framework to use, as each 
+  					framework delivers different amounts of performance improvement.
+  				</P>
+  				<p>
+  					Casper is a compiler that automatically retargets sequential Java code to be
+  					executed on Apache Spark. Given a sequential 
+  					code fragment, Casper uses verified lifting to infer a high-level summary of the code. The inferred summary is then 
+  					compiled to be executed on Spark. The entire process is completely automated and currently
+  					our translated benchmarks
+  					can execute on average 13.1x (and upto 29x) faster when compared to the sequential implementations.
+				</p>
+				<h2>Demo</h2>
+				<p><a href="http://demo.casper.uwplse.org">Click here</a> to optimize applications using Casper, right here in your browser!</p>
+				<h2>Source</h2>
+				<p>Casper is open-source software, and is developed on <a href="https://github.com/uwplse/Casper">GitHub</a>. Please feel free to submit comments, issues, and pull requests there!</p>
+				<h2>News</h2>
+                <p>
+					<span class="label label-default">New</span>
+                    We will be demoing Casper at this year's <a href="http://sigmod2017.org/">SIGMOD</a> Conference!
+                </p>
+			    <p>
+                    We have released the Casper <a href="https://github.com/uwplse/Casper">source code</a> on GitHub. We are actively working to roll out more features and bug fixes. Please subscribe to our <a href="https://mailman.cs.washington.edu/mailman/listinfo/casper-users">mailing-list</a> to stay up-to-date with latest news regarding Casper.
+                                </p>
+				<p>
+					We have recently finished developing a prototype implementation of Casper. Our paper describing this effort 
+					will appear at <a href="http://formal.epfl.ch/synt/2016/index.html">SYNT 2016</a>!
+				</p>
+  				<h2>Publications</h2>
+                <p>
+  					[1] &nbsp;<a target="_blank" href="sigmod17.pdf"><span>Optimizing Data-Intensive Applications Automatically By Leveraging Parallel Data</span>
+                    <br />
+                    <span style="margin-left: 27px;">Processing Frameworks</span></a> <br/>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i>Maaz Bin Safeer Ahmad</i> and Alvin Cheung</br>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SIGMOD 2017 Demo (To appear)
+  				</p>    
+  				<p>
+  					[2] &nbsp;<a target="_blank" href="http://homes.cs.washington.edu/~maazsaf/synt16.pdf">Leveraging Parallel Data Processing Frameworks with Verified Lifting</a><br>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i>Maaz Bin Safeer Ahmad</i> and Alvin Cheung <br>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SYNT 2016 &ndash; <a href="synt16slides.pdf">Presentation Slides</a> <br>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:red">Best Student Paper Award</span>
+  				</p>
+                <h2>People</h2>
+  				<p>
+  					If you have any questions, want to be kept up-to date, or just want to say hi, <a href="mailto:casper-users@cs.washington.edu">email us!</a>
+  				</p>
+  				<div class="person" title="Maaz Ahmad">
+				    <a href="http://homes.cs.washington.edu/~maazsaf/">
+				        <img src="http://db.cs.washington.edu/images/people/maaz.jpg">
+				        <p>Maaz Ahmad</p>
+				    </a>
+				</div>
+
+				<div class="person" title="Alvin Cheung">
+				    <a href="http://homes.cs.washington.edu/~akcheung/">
+				        <img src="http://db.cs.washington.edu/images/people/alvin.jpg">
+				        <p>Alvin Cheung</p>
+				    </a>
+				</div>
+                <br/><br/><br/><br/><br/><br/><br/><br/>
+  				<h2 style="margin-top:30px">Example: Word Count</h2>
+				<p>The input to Casper is un-annotated sequential Java code. The following code computes the word count
+				by sequentially iterating over the list of words:</p>
+<textarea rows="20" id="java-code">
+class WordCount {
+  public static void main(String[] args) {
+    countWords(null, null);
+  }
+
+  Map<String, Integer> 
+  countWords(List<String> words, Map<String, Integer> counts) {
+    for (int j = 0; j < words.size(); j++) {
+      String word = words.get(j);
+      Integer prev = counts.get(word);
+	    if (prev == null) {
+        prev = 0;
+        counts.put(word, prev + 1);
+      }
+    }
+    return counts;
+  }
+}</textarea>
+				<br/>
+				<p>We can use Casper to re-target the Java program to Apache Spark automatically:</p>
+				<pre>  $ ./bin/run.sh WordCount.java WordCountTranslated.java</pre>
+				<p style="">which translates WordCount.java and writes the generated code to WordCountTranslated.java:</p>
+				<textarea id="java-code-translated" style="height:auto">
+class WordCount {
+	
+	public static void main(String[] args) { countWords(null, null); }
+	
+	Map<String,Integer> 
+	countWords(List<String> words, Map<String,Integer> counts) {
+	  int j = 0;
+	  boolean loop$0 = false;
+    loop$0 = false;
+    SparkConf conf = new SparkConf().setAppName("spark");
+    JavaSparkContext sc = new JavaSparkContext(conf);
+			
+    JavaRDD<String> rdd_0_0 = sc.parallelize(words);
+			
+    JavaPairRDD<Tuple2<Integer,String>, Integer> mapEmits = 
+      rdd_0_0.flatMapToPair(
+        new PairFlatMapFunction<String, Tuple2<Integer,String>, Integer>() {
+          public Iterable<Tuple2<Tuple2<Integer,String>, Integer>> 
+            call(String words_j) {
+              List<Tuple2<Tuple2<Integer,String>, Integer>> emits = 
+                new ArrayList<Tuple2<Tuple2<Integer,String>, Integer>>();
+					
+              emits.add(new Tuple2(new Tuple2(0,words_j), 1));		
+              return emits;
+            }
+          });
+			
+    JavaPairRDD<Tuple2<Integer,String>, Integer> reduceEmits = 
+      mapEmits.reduceByKey(new Function2<Integer,Integer,Integer>(){
+        public Integer call(Integer val1, Integer val2) {
+          return val1 + val2;
+        }
+      });
+			
+    Map<Tuple2<Integer,String>, Integer> output_rdd_0_0 = 
+      reduceEmits.collectAsMap();
+    for(Tuple2<Integer,String> output_rdd_0_0_k : output_rdd_0_0.keySet()){
+      counts.put(output_rdd_0_0_k._2, 
+                 output_rdd_0_0.get(output_rdd_0_0_k));
+    }
+    return counts;
+  }
+}</textarea></br>
+				<p>The sequential loop in the original program has now been replaced by Spark RDD operations which can be executed in parallel. This
+				leads to better performance and scaling as data size gets larger:</p>
+				<center><img width="95%" style="margin-bottom:10px;" src="graph.jpg"/></center>
+				<p>The above graph was generated by executing both solutions on a 10 node cluster of AWS m3.xlarge instances. The input data files were
+				stored on HDFS.</p><br/><br/><br/><br/>
+		    </div>
+	    </div>
+
+</body>
+<script>
+  var javaEditor = CodeMirror.fromTextArea(document.getElementById("java-code"), {
+	lineNumbers: true,
+	matchBrackets: true,
+	mode: "text/x-java",
+	readOnly: true
+  });
+  javaEditor.setSize("100%","370px");
+  var javaEditor2 = CodeMirror.fromTextArea(document.getElementById("java-code-translated"), {
+	lineNumbers: true,
+	matchBrackets: true,
+	mode: "text/x-java",
+	readOnly: true
+  });
+  javaEditor2.setSize("100%","880px");
+</script>
+</html>
