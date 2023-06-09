@@ -1,1 +1,814 @@
-test page
+
+<html lang="en"><head>
+		<meta charset="utf-8">
+
+		<meta name="author" content="Maaz Bin Safeer Ahmad">
+		<meta name="keywords" content="Casper, Maaz Bin Safeer Ahmad, Verified Lifting, Compiler, Spark, Data Processing, Big Data, Maaz Ahmad, CSE, UW, Univeristy of Washington, Alvin Cheung, Programming Languages, Databases">
+		
+		<title>Casper - Compiler for Optimizing Sequential Applications</title>
+		<meta name="description" content="Casper is a tool that automatically translates code fragments in Java applications to run on Big Data Processing Frameworks such as Apache Hadoop or Apache Spark.">
+
+		<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+		<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+		<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+		<link rel="manifest" href="/manifest.json">
+		<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+		<meta name="theme-color" content="#0b3d57">
+
+		<meta property="og:image" content="http://casper.uwplse.org/casper.png" />
+
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+
+		<!-- Latest compiled and minified CSS -->
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.bundle.min.js"></script>    
+
+ 		<script>
+		  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+		  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+		  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+		  ga('create', 'UA-27186113-7', 'auto');
+		  ga('send', 'pageview');
+
+		</script>
+		
+		<link rel="stylesheet" href="codemirror.css">
+		<link rel="stylesheet" href="3024-night.css">
+		<script src="codemirror.js"></script>
+		<script src="clike.js"></script>
+
+        <script src="jqcloud.js"></script>
+		<link rel="stylesheet" href="jqcloud.css">
+
+		<style>
+			.container-fluid{
+				max-width: 1400px;	
+			}
+
+			.content{
+				max-width: 1400px;
+				min-width: 950px;
+				width: 100%;
+                float: left;
+			}
+
+			p{
+				font-size: 16px;
+				text-align: justify;
+			}
+
+			h1{
+				font-size: 88px;
+				margin-bottom: 0px;
+				font-weight: bold;
+				color: #337ab7;
+			}
+
+			.subtitle{
+				font-size: 30px;
+				color: white;
+				margin-bottom: 20px;
+			}
+
+			.small-heading {
+				color: #286090;
+				font-weight: bold;
+				font-size: 24px;		
+			}
+
+			.footer .small-heading {
+				margin-top: 3px;
+				margin-bottom: 3px;			
+			}
+
+			.footer{
+				margin-bottom: 25px;
+				min-width: 980px;
+			}
+
+			.translate {
+				margin-top: 20px;
+				margin-bottom: 10px;
+				border-radius: 0px;
+				width: 200px;
+			}
+
+			.execute {
+				margin-top: 20px;
+				margin-bottom: 10px;
+				border-radius: 0px;
+				width: 200px;
+			}
+
+			hr{
+				margin-top: 30px;
+				margin-bottom: 10px;
+				border-top: 1px solid white;
+				float: left;
+				width: 100%;
+			}
+
+			li a:hover{
+				cursor: pointer;
+			}
+
+			.samples{
+				width: 250px;
+				display: inline-block;
+				vertical-align: top;
+			}
+
+			.working-icon{
+				width: 30px;
+			    margin-top: 10px;
+			    margin-left: 15px;
+			}
+
+			.console-label, .output-label{
+				padding-left: 8px;
+			    border-radius: 0 0 0 6px;
+			    position: relative;
+			    z-index: 2;
+			    top: 21px;
+			    font-family: monospace;
+			    background: #ddd;
+			    margin-top: -20px;
+			}
+
+			.console-label{
+				width: 165px;
+			    left: 764px;
+			}
+
+			.output-label{
+			    width: 198px;
+    			left: 732px;
+			}
+
+			.CodeMirror{
+				border: 1px solid #eee;
+			}
+
+			.output-label, .console-label, .working-icon {
+				visibility: hidden;
+			}
+
+			.execp {
+				display: none;
+			}			
+
+			.dataset {
+				display: none;
+				width: 200px; 
+				margin-top: 25px; 
+				border-color: red;
+			}
+			
+			.viz{
+				width: 100%;
+				margin-top: 40px;
+				margin-bottom: 20px;
+				float: left;
+			}
+
+			.viz-title{
+				font-weight: bold;
+				font-size: 32px;
+				display: inline-block;
+			}
+	
+			.viz-title-2{
+				font-weight: bold; 
+				font-size: 32px; 
+				margin-bottom: 15px;			
+			}
+
+			.viz-time{
+				font-size: 16px;
+				margin-bottom: 25px;
+				display: inline-block;
+				color: green;
+			}
+		
+			.viz-wait{
+				width:30%; 
+				margin-left: 35%; 
+				margin-right:35%;
+				margin-top: 100px;
+				margin-bottom: 100px; 
+				display: inline-block;			
+			}
+
+            #sel-dataset{
+                margin-right: 10px;
+            }
+
+			#carouselExampleControls{
+
+			}
+
+			.myimg{
+				width: 90%;
+			}
+
+			.header{
+				background: #0b3d57;
+				height: 215px;
+				min-width: 980px;
+			}
+
+			.footer{
+				background: #0b3d57;
+				height: 250px;
+				margin-bottom: 0px;
+				padding: 20px;
+				padding-left: 40px;
+                float: left;
+                width: 100%;
+			}
+
+			.footer a{
+				color: white;
+			    line-height: 30px;		
+			}
+
+			.small-heading{
+				color: white;
+			}
+
+			.person {
+				margin: 10px;
+				margin-right: 30px;
+				width: 120px;
+				height: 160px;
+				display: inline-block;
+			}
+
+			.person img {
+				height: 100%;
+				width: 100%;
+				border-radius: 6px;
+				object-fit: cover;
+				object-position: center;
+			}
+
+			.person p {
+				text-align: center;
+				font-size: 1em;
+				font-weight: bold;
+				color: white;
+				position: relative;
+				text-shadow: 1px 1px 2px black;
+				padding-bottom: 4px;
+				bottom: 25px;
+				display: table-cell;
+				vertical-align: bottom;
+				width: 110px;
+			}
+
+			.person:hover{
+				transition: opacity .1s;
+    			opacity: 0.7;
+			}
+			
+			.headingstyle1{
+				font-size: 42px;
+				font-weight: bold;
+				margin-bottom: 20px;
+			}
+
+			.pubs p{
+				font-size: 22px;
+			}
+
+            #slide1, #slide2, #slide3, #slide4, #slide5, #slide-info{
+               display: none;
+            }
+
+            #data{
+                width: 120px;
+                margin-top: 150px;
+                margin-left: 190px;
+                opacity: 1;
+            }
+
+            #app{
+                width: 150px;
+                margin-top: 146px;
+                margin-left: 97px;
+                opacity: 0;
+            }
+
+            #processing{
+                width: 150px;
+                margin-top: 150px;
+                margin-left: 75px;
+                opacity: 0;
+            }
+
+            #result{
+                width: 150px;
+                margin-top: 150px;
+                margin-left: -150px;
+                opacity: 0;
+            }
+
+            .img-head{
+                font-weight: bold;
+                font-size: 26px;
+                display: inline-block;
+            }
+
+            #arrow1,#arrow2{
+                opacity: 0;
+                width:120px;
+                margin-left: 80px;
+                margin-top: 150px;
+            }
+
+            #otherdata{
+                width:315px;
+                height:289.84px;
+                padding-left: 66px;
+                margin-top: -284.83px;
+                opacity: 0;
+            }
+
+            #alert{
+                width: 50px;
+                margin-top: -70px;
+                margin-left: -107px;
+                opacity: 0;
+            }
+		</style>
+	</head>
+
+	<body>
+		<div class="header">
+			<div class="container-fluid">		
+				<img src="header.svg" style="width:300px; float: left;" />
+				<h1 style="padding-top:30px; color: white;">Casper</h1>
+				<p class="subtitle">Run your Java applications on Big Data Frameworks</p>
+			</div>
+		</div>
+		<div class="container-fluid">			
+		<div class="content">
+				<br/>				
+				<div class="jumbotron">
+				  <center>
+				  <h2><b style="font-size: 42px;">Casper</b> is a compiler that can <u>automatically</u> retarget sequential Java programs to Big Data processing frameworks such as Spark, Hadoop or Flink.</h2>
+				  <br/>
+				  <a id="start-demo" style="margin-right: 5px;" class="btn btn-primary btn-lg" href="#" role="button">Learn More</a>
+				  <a style="margin-right: 5px;" class="btn btn-warning btn-lg" href="http://demo.casper.uwplse.org/" role="button">Online Demo</a>
+				  <a style="margin-right: 5px;" class="btn btn-success btn-lg" href="https://github.com/uwplse/Casper" role="button">GitHub</a>
+				  <a class="btn btn-danger btn-lg" href="https://mailman.cs.washington.edu/mailman/listinfo/casper-users" role="button">Mailing List</a>
+
+				  </center>
+				</div>		
+				<br/>
+
+				<div class="demo">
+					<!--<div id="slide1">
+						<img id="app" src="app.svg" />
+						<img id="data" src="data.svg" />
+						<img id="data2" src="data.svg" />
+						<img id="data3" src="data.svg" />
+						<img id="data4" src="data.svg" />
+						<img id="data5" src="data.svg" />
+						<img id="data6" src="data.svg" />
+						<img id="trophy" src="goal.png" />
+						<img id="casper-hero" src="casper.svg" />
+						<img id="user" src="user.svg" />
+						<div style="width: 100%; height: 32px">
+						    <span style="margin-left:115px" class="img-head">User</span>
+						    <span style="margin-left:235px" class="img-head">Application</span>
+						    <span style="margin-left:340px" class="img-head">Data</span>
+						    <span style="margin-left:304px" class="img-head">Results</span>
+						</div>
+					</div>-->
+	
+					<div id="slide-info" style="height: 410px">
+						<h2>Abstract</h2>
+						<p style="font-size: 22px">
+							MapReduce is a popular programming paradigm for developing large-scale, data-intensive computation. Many frameworks that implement this paradigm have recently been developed. To leverage these frameworks, however, developers must become familiar with their APIs and rewrite existing code. Casper is a new tool that automatically translates sequential Java programs into the MapReduce paradigm. Casper identifies potential code fragments to rewrite and translates them in two steps: (1) Casper uses <i>program synthesis</i> to search for a program summary (i.e., a functional specification) of each code fragment. The summary is expressed using a high-level intermediate language resembling the MapReduce paradigm and verified to be semantically equivalent to the original using a theorem prover. (2) Casper generates executable code from the summary, using either the Hadoop, Spark, or Flink API. We evaluated Casper by automatically converting real-world, sequential Java benchmarks to MapReduce. The resulting benchmarks perform up to 48.2x faster compared to the original.
+						</p>
+					</div>					
+
+					<div id="slide2" style="height: 550px">
+						<div style="width: 100%;">
+						    <center>
+						        <h2>Legacy Applications and Changing Demands</h2>
+						    </center>
+						</div>
+						<img id="data" src="data.png" />
+						<img id="arrow1" src="arrow.png" />
+						<img id="app" src="app.png" />
+						<img id="arrow2" src="arrow.png" />
+						<img id="processing" src="running.gif" />
+						<img id="result" src="result.png" />
+						<img id="alert" src="alert.png" />
+						<div id="otherdata">
+						    <img style="width: 120px;" src="data.png" />
+						    <img style="width: 120px;" src="data.png" />
+						    <img style="width: 120px;" src="data.png" />
+						    <img style="width: 120px;" src="data.png" />
+						</div>
+						<div style="width: 100%; height: 39px; margin-top: 50px">
+						    <span style="margin-left:220px" class="img-head">Data</span>
+						    <span style="margin-left:345px;opacity: 0;" id="app-label" class="img-head">Application</span>
+						    <span style="margin-left:304px;opacity: 0;" id="res-label" class="img-head">Results</span>
+						</div>
+					</div>
+
+					<div id="slide3" style="height: 470px">
+						<div style="width: 100%;">
+						    <center>
+						        <h2>Big Data Processing Frameworks can help!</h2>
+						    </center>
+						</div>
+						<div style="width:50%; float: left; padding-left: 100px; padding-right: 60px; padding-top:50px">
+							<img class="myimg" src="frameworks.png" alt="First slide">
+						</div>
+						<br/>
+						<div style="width:50%; float: right;padding-top: 50px;">
+							<br/>
+							<img style="width:35px;float:left;" src="checkbox.png" />
+							<h2 style="line-height: 35px;margin-left:65px;font-size: 30px;">Process Large Volumes of Data</h2>
+							<br/>
+							<img style="width:35px;float:left;" src="checkbox.png" />
+							<h2 style="line-height: 35px;margin-left:65px;font-size: 30px;">Scalable and Fault Tolerant</h2>
+							<br/>
+							<img style="width:35px;float:left;" src="checkbox.png" />
+							<h2 style="line-height: 35px;margin-left:65px;font-size: 30px;">Optimized Parallel Execution</h2>
+						</div>
+					</div>
+
+					<div id="slide4" style="height: 1120px">
+						<div style="width: 100%;">
+						    <center>
+						        <h2>Inertia to Adapting New Technology</h2>
+						    </center>
+						</div>
+						<div style="width:60%; padding-top:50px; margin: auto; height: 380px;">
+							<textarea rows="20" id="java-code">public class Yelp {
+    public static Map<Integer,Integer> getScoreDist(List<Restaurant> data, String state) {
+        Map<Integer,Integer> result = new HashMap<Integer,Integer>();
+
+        for (Restaurant rest : data) {
+            if (!result.containsKey(rest.score)) {
+                result.put(rest.score, 0);
+            }
+            if (rest.state.equals(state)) {
+                result.put(rest.score, result.get(rest.score)+1);
+            }
+        }
+
+        return result;
+    }
+}</textarea>
+							<img src="java.png" style="width: 50px; position: relative; bottom: 110px; left: 740px;" />
+						</div>
+
+						<div id="manual-opt" style="width: 40%; float: left; display: none;">
+							<div style="margin-top: 43px; float: right; margin-right:40px;">
+								<img src="manual.png" style="width: 150px;" />
+								<center><h3 style="margin-top: 15px; margin-bottom: 20px; font-size:20px;">Manually Re-write</h3></center>
+							</div>
+							<div id="manual-points" style="margin-top: 60px; float: right; margin-right:80px; width: 200px; font-size: 18px; line-height: 35px; display: none">
+								<ul>
+								  <li>Slow and expensive</li>
+								  <li>Requires expertise</li>
+								  <li>Can introduce bugs</li>
+								  <li>Recurrent problem</li>
+								</ul>
+							</div>
+						</div>
+						<div id="translate-arrow" style="width: 100%; float: left;">
+							<center><img src="arrow_down.jpg" style="margin-top: 78px; margin-bottom: 79px; width: 100px;" /></center>
+						</div>
+						<div id="casper-opt" style="width: 40%; float: left; display: none;">
+							<div style="margin-top: 35px; float: left;">
+								<img src="casper.svg" style="width: 250px;" />
+								<center><h3 style="margin-bottom: 20px; font-size:20px;">Compile with Casper</h3></center>
+							</div>
+							<div id="casper-points" style="margin-top: 60px; float: left; margin-left:30px; width: 200px; font-size: 18px; line-height: 35px; display: none">
+								<ul>
+								  <li>Automatic</li>
+								  <li>Sound</li>
+								  <li>Efficient</li>
+								</ul>
+							</div>
+						</div>
+
+						<div style="width:60%; margin: auto">
+							<textarea rows="20" id="output-code">public class Yelp {
+	public static Map<Integer,Integer> getScoreDist(JavaRDD<Restaurant> data, final String State) {
+		Map<Integer,Integer> result = null;
+		result = data.flatMapToPair(new PairFlatMapFunction<Restaurant, Integer, Integer>() {
+			public Iterator<Tuple2<Integer, Integer>> call(Restaurant rest) throws Exception {
+				List<Tuple2<Integer, Integer>> emits = new ArrayList<Tuple2<Integer, Integer>>();
+				if(rest.state.equals(state)) 
+					emits.add(new Tuple2(rest.score, 1));
+				return emits.iterator();
+			}
+		}).reduceByKey(new Function2<Integer,Integer,Integer>(){
+			public Integer call(Integer val1, Integer val2) throws Exception {
+				return (val2+val1);
+			}
+		}).collectAsMap();
+		return result;
+	}
+}</textarea>
+							<img src="sparkjava.png" style="width: 215px; position: relative; bottom: 110px; left: 590px;" />
+						</div>
+					</div>
+
+					<div id="slide5" style="height: 750px">
+						<div style="width: 100%;">
+							<center>
+							    <h2>Performance Comparison: Casper vs Manual (75GB, 10 Nodes)</h2>
+							</center>
+						</div>
+						<img style="width: 100%; margin-top: 15px;" src="comparison_simple.jpg" />
+					</div>
+				</div>
+
+
+				<div class="pubs" style="width:100%;margin-bottom:80px;">
+					<h2 class="headingstyle1">Publications</h2>
+					<p>
+	  					[1] &nbsp;<a target="_blank" href="https://dl.acm.org/citation.cfm?id=3196891"><span>Automatically Leveraging MapReduce Frameworks for Data-Intensive Applications</span></a> <br>
+						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i>Maaz Bin Safeer Ahmad</i> and Alvin Cheung<br>
+						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="https://sigmod2018.org/">SIGMOD 2018</a><br/>
+	  				</p>
+					<p>
+	  					[2] &nbsp;<a target="_blank" href="https://dl.acm.org/citation.cfm?id=3056440"><span>Optimizing Data-Intensive Applications Automatically By Leveraging Parallel Data Processing Frameworks</span></a> <br>
+						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i>Maaz Bin Safeer Ahmad</i> and Alvin Cheung<br>
+						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="http://sigmod2017.org/">SIGMOD 2017 Demo</a><br/>
+						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:red">Honorable Mention for Best Demo Award</span>
+	  				</p>
+					<p>
+	  					[3] &nbsp;<a target="_blank" href="https://arxiv.org/abs/1611.07623">Leveraging Parallel Data Processing Frameworks with Verified Lifting</a><br>
+						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i>Maaz Bin Safeer Ahmad</i> and Alvin Cheung <br>
+						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="http://formal.epfl.ch/synt/2016/">SYNT 2016</a> – <a href="http://casper.uwplse.org/synt16slides.pdf">Presentation Slides</a> <br>
+						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:red">Best Student Paper Award</span>
+	  				</p>
+				</div>
+
+				<div style="width:100%;margin-bottom:80px;">
+					<h2 class="headingstyle1">Sponsors</h2>
+					<a href="http://www.adobe.com/"><img src="adobe.png" style="width:21%;margin-top: -5;" /></a>
+					<a href="http://www.google.com/"><img src="google.png" style="width:20%;margin-left: 3%;margin-top: 10px" /></a>
+					<a href="https://www.nsf.gov/"><img src="nsf.png" style="width:10%;margin-left: 3%;" /></a>
+					<a href="http://www.darpa.mil/"><img src="darpa.png" style="width:14%;margin-left: 3%;" /></a>
+					<a href="https://energy.gov/"><img src="doe.jpg" style="width:21%;margin-left: 3%;margin-top:10px" /></a>
+				</div>
+
+				<div style="width: 40%; float: left;">
+					<h2 class="headingstyle1">Developers</h2>
+					<div class="person" title="Maaz Ahmad">
+						<a href="http://homes.cs.washington.edu/~maazsaf/">
+						    <img src="http://db.cs.washington.edu/images/people/maaz.jpg">
+						    <center><p>Maaz Ahmad</p></center>
+						</a>
+					</div>
+					<div class="person" title="Alvin Cheung">
+						<a href="http://homes.cs.washington.edu/~akcheung/">
+						    <img src="http://db.cs.washington.edu/images/people/alvin.jpg">
+						    <center><p>Alvin Cheung</p></center>
+						</a>
+					</div>
+					<div class="person" title="Alan Bi">
+						<a href="http://www.alanbi.com/">
+						    <img src="alan.png">
+						    <center><p>Alan Bi</p></center>
+						</a>
+					</div>
+				</div>
+
+				<div style="width:60%; float:right; min-height: 246px; margin-bottom: 70px;">
+
+					<h2 class="headingstyle1">Affiliations</h2>
+					<a href="http://db.cs.washington.edu/"><img style="width: 120px; margin-left: 10px;margin-top:40px;" src="uwdb.jpg" /></a>
+					<a href="http://uwplse.org"><img style="width: 250px; margin-left: 60px;margin-top:20px;" src="plse.png" /></a>
+					<a href="http://www.cs.washington.edu/"><img style="width: 320px; margin-left: 40px; margin-top: 30px;" src="uw.jpg" /></a>
+				</div>
+				<br/>
+			</div>
+		</div>
+		<div class="footer">
+			<div class="container-fluid">
+				<div class="samples">
+					<p class="small-heading">Learn more</p>
+					<ul class="list-unstyled">
+						<li><a href="http://casper.uwplse.org/">Casper Homepage</a></li>
+						<li><a href="https://github.com/uwplse/Casper">Git Repository</a></li>
+						<li><a href="https://mailman.cs.washington.edu/mailman/listinfo/casper-users">Mailing List</a></li>
+						<li><a href="http://casper.uwplse.org/">Publications</a></li>
+					</ul>
+				</div>
+				<div class="samples">
+					<p class="small-heading">Developers</p>
+					<ul class="list-unstyled">
+						<li><a href="http://homes.cs.washington.edu/~maazsaf/">Maaz Ahmad</a></li>
+						<li><a href="http://homes.cs.washington.edu/~akcheung/">Alvin Cheung</a></li>
+						<li><a href="http://www.alanbi.com/">Alan Bi</a></li>
+					</ul>
+				</div>
+				<div class="samples">
+					<p class="small-heading">Affiliations</p>
+					<ul class="list-unstyled">
+						<li><a href="http://db.cs.washington.edu/">UWDB</a></li>
+						<li><a href="http://uwplse.org">PLSE</a></li>
+						<li><a href="http://www.cs.washington.edu/">University of Washington</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</body>
+
+	<script type="text/javascript">
+        var state = 0;
+		var working = false;
+
+         $(window).keypress(function (e) {
+          if (e.keyCode === 0 || e.keyCode === 32) {
+            e.preventDefault();
+
+			if(working) return;            
+
+            if(state == 1){
+				working = true;
+                $('#arrow1, #app, #app-label').animate({opacity: 1}, 1000, function(){
+                    state = 2;
+					working = false;
+                });
+            }
+            else if(state == 2){
+				working = true;
+                $('#arrow2, #processing, #res-label').animate({opacity: 1}, 1000, function(){
+                    setTimeout(function() {
+                        $('#processing').animate({opacity: 0},500,function(){
+                            $('#result').animate({opacity: 1},500,function(){
+                                state = 3;
+								working = false;
+                            });
+                        });
+                    }, 1000);
+                });
+            }
+            else if(state == 3){
+				working = true;
+                $('#data').animate({opacity: 0}, 500, function(){
+                    $('#otherdata').animate({opacity: 1}, 500, function(){
+                        setTimeout(function() {
+                            $('#result').animate({opacity: 0},500,function(){
+                                $('#processing').animate({opacity: 1},500,function(){
+                                    setTimeout(function() {
+                                        $('#alert').animate({opacity: 0.7},500,function(){
+                                            state = 4;
+											working = false;
+                                        });
+                                    }, 5000);
+                                });
+                            });
+                        }, 100);
+                    });
+                });
+            }
+			else if(state == 4){
+				working = true;
+				$(".demo").animate({"height":"1050px"},500,function(){     
+		            $("#slide3").fadeIn(1000);
+		            $('html, body').animate({
+		                scrollTop: $("#slide3").offset().top-250
+		            }, 500);
+		            state = 5;
+					working = false;
+		        });
+            }
+			else if(state == 5){
+				working = true;
+				$(".demo").animate({"height":"2140px"},500,function(){     
+		            $("#slide4").fadeIn(0, function(){
+						var javaEditor = CodeMirror.fromTextArea(document.getElementById("java-code"), {
+							lineNumbers: true,
+							matchBrackets: true,
+							mode: "text/x-java",
+							readOnly: true,
+							tabSize: 2
+						});
+
+						javaEditor.setSize("100%","330px");
+
+						var outputEditor = CodeMirror.fromTextArea(document.getElementById("output-code"), {
+							lineNumbers: true,
+							matchBrackets: false,
+							mode: "text/x-java",
+							readOnly: true
+						});
+						outputEditor.setSize("100%","370px");
+					});
+		            $('html, body').animate({
+		                scrollTop: $("#slide4").offset().top-30
+		            }, 500);
+		            state = 6;
+					working = false;
+		        });
+            }
+			else if(state == 6){
+				working = true;
+				$("#translate-arrow").css("width","20%");
+				$("#manual-opt").fadeIn(500,function(){
+					setTimeout(function() {
+                        $('#manual-points').fadeIn(500,function(){
+                            state = 7;
+							working = false;
+                        });
+                    }, 1000);
+				});
+			}
+			else if(state == 7){
+				working = true;
+				$("#casper-opt").fadeIn(500,function(){
+					setTimeout(function() {
+                        $('#casper-points').fadeIn(500,function(){
+                            state = 8;
+							working = false;
+                        });
+                    }, 1000);
+				});
+			}
+			else if(state == 8){
+				working = true;				
+				$(".demo").animate({"height":"2890px"},500,function(){     
+		            $("#slide5").fadeIn(1000);
+		            $('html, body').animate({
+		                scrollTop: $("#slide5").offset().top-250
+		            }, 500);
+		            state = 9;
+					working = false;
+		        });
+			}
+          }
+        });
+
+        $("#start-demo").click(function(e){
+            $(".demo").animate({"height":"450px"},500,function(){     
+                $('html, body').animate({
+                    scrollTop: $(".demo").offset().top-100
+                }, 500);
+                $("#slide-info").fadeIn(1000);
+                state = 100;
+            });
+        });
+
+        /*$("#data2").click(function(e){
+            $("#data, #data2, #data3, #data4, #data5, #data6").animate({"opacity":"1"},1500,function(){
+                
+            });
+        });*/
+
+
+		var datalabels = [0,1,2,3,4,5];
+		var datapoints = [1452,9841,28941,39123,32412,2543];
+
+		Chart.defaults.global.legend.display = false;
+		Chart.defaults.global.maintainAspectRatio = false;
+
+        /*var ctx = document.getElementById("chart").getContext("2d");
+        var data = {
+            labels: datalabels,
+            datasets: [
+            {
+                backgroundColor: [
+		            'rgba(255, 99, 132, 0.2)',
+		            'rgba(54, 162, 235, 0.2)',
+		            'rgba(255, 206, 86, 0.2)',
+		            'rgba(75, 192, 192, 0.2)',
+		            'rgba(153, 102, 255, 0.2)',
+		            'rgba(255, 159, 64, 0.2)'
+		        ],
+		        borderColor: [
+		            'rgba(255,99,132,1)',
+		            'rgba(54, 162, 235, 1)',
+		            'rgba(255, 206, 86, 1)',
+		            'rgba(75, 192, 192, 1)',
+		            'rgba(153, 102, 255, 1)',
+		            'rgba(255, 159, 64, 1)'
+		        ],
+                data: datapoints
+            }
+          ]
+        };
+          
+        var myBarChart = new Chart(ctx, {
+            type: 'bar',
+            data: data
+        });*/
+	</script>
+</html>
